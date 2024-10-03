@@ -1,37 +1,52 @@
-import Fluent
 import Vapor
+import Fluent
 
 struct TodoController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let todos = routes.grouped("todos")
-
-        todos.get(use: self.index)
-        todos.post(use: self.create)
+        todos.get(use: index)
+        todos.post(use: create)
         todos.group(":todoID") { todo in
-            todo.delete(use: self.delete)
+            todo.put(use: update)
+            todo.delete(use: delete)
         }
     }
 
-    @Sendable
+    // Получить все задачи
     func index(req: Request) async throws -> [TodoDTO] {
-        try await Todo.query(on: req.db).all().map { $0.toDTO() }
+        let tasks = try await Task.query(on: req.db).all()
+        return tasks.map { task in
+            TodoDTO(id: task.id, title: task.title, isCompleted: task.isCompleted)
+        }
     }
 
-    @Sendable
+    // Создать новую задачу
     func create(req: Request) async throws -> TodoDTO {
-        let todo = try req.content.decode(TodoDTO.self).toModel()
-
-        try await todo.save(on: req.db)
-        return todo.toDTO()
+        let todoDTO = try req.content.decode(TodoDTO.self)
+        let task = Task(title: todoDTO.title, isCompleted: todoDTO.isCompleted)
+        try await task.save(on: req.db)
+        return TodoDTO(id: task.id, title: task.title, isCompleted: task.isCompleted)
     }
 
-    @Sendable
-    func delete(req: Request) async throws -> HTTPStatus {
-        guard let todo = try await Todo.find(req.parameters.get("todoID"), on: req.db) else {
+    // Обновить существующую задачу
+    func update(req: Request) async throws -> TodoDTO {
+        let updatedTodoDTO = try req.content.decode(TodoDTO.self)
+        guard let task = try await Task.find(req.parameters.get("todoID"), on: req.db) else {
             throw Abort(.notFound)
         }
+        task.title = updatedTodoDTO.title
+        task.isCompleted = updatedTodoDTO.isCompleted
+        try await task.update(on: req.db)
+        return TodoDTO(id: task.id, title: task.title, isCompleted: task.isCompleted)
+    }
 
-        try await todo.delete(on: req.db)
+    // Удалить задачу
+    func delete(req: Request) async throws -> HTTPStatus {
+        guard let task = try await Task.find(req.parameters.get("todoID"), on: req.db) else {
+            throw Abort(.notFound)
+        }
+        try await task.delete(on: req.db)
         return .noContent
     }
+
 }

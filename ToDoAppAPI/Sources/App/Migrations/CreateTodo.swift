@@ -1,14 +1,17 @@
 import Fluent
 
-struct CreateTodo: AsyncMigration {
-    func prepare(on database: Database) async throws {
-        try await database.schema("todos")
+struct CreateTodo: Migration {
+    func prepare(on database: Database) -> EventLoopFuture<Void> {
+        database.schema("tasks")
             .id()
             .field("title", .string, .required)
+            .field("isCompleted", .bool, .required)
             .create()
     }
 
-    func revert(on database: Database) async throws {
-        try await database.schema("todos").delete()
+    func revert(on database: Database) -> EventLoopFuture<Void> {
+        database.schema("tasks").delete()
     }
 }
+
+
