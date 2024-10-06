@@ -27,6 +27,15 @@ struct TodoController: RouteCollection {
         try await task.save(on: req.db)
         return TodoDTO(id: task.id, title: task.title, isCompleted: task.isCompleted)
     }
+    
+    // Задача по id
+    func getById(req: Request) async throws -> TodoDTO {
+        guard let task = try await Task.find(req.parameters.get("todoID"), on: req.db) else {
+            throw Abort(.notFound)
+        }
+
+        return TodoDTO(id: task.id, title: task.title, isCompleted: task.isCompleted)
+    }
 
     // Обновить существующую задачу
     func update(req: Request) async throws -> TodoDTO {
