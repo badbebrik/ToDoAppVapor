@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D0FA9722CB5C9F6008A26F0 /* NetworkingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0FA9712CB5C9F6008A26F0 /* NetworkingManager.swift */; };
+		1D0FA9752CB5CAC4008A26F0 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 1D0FA9742CB5CAC4008A26F0 /* KeychainAccess */; };
+		1D0FA9772CB5CE60008A26F0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0FA9762CB5CE60008A26F0 /* SettingsView.swift */; };
 		1D35C2BB2CA4A5E5004B371A /* ToDoAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D35C2BA2CA4A5E5004B371A /* ToDoAppApp.swift */; };
 		1D35C2BD2CA4A5E5004B371A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D35C2BC2CA4A5E5004B371A /* ContentView.swift */; };
 		1D35C2BF2CA4A5E6004B371A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D35C2BE2CA4A5E6004B371A /* Assets.xcassets */; };
@@ -20,6 +23,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1D0FA9712CB5C9F6008A26F0 /* NetworkingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingManager.swift; sourceTree = "<group>"; };
+		1D0FA9762CB5CE60008A26F0 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1D35C2B72CA4A5E5004B371A /* ToDoApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D35C2BA2CA4A5E5004B371A /* ToDoAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoAppApp.swift; sourceTree = "<group>"; };
 		1D35C2BC2CA4A5E5004B371A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -38,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D0FA9752CB5CAC4008A26F0 /* KeychainAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,6 +76,7 @@
 				1D35C2BC2CA4A5E5004B371A /* ContentView.swift */,
 				1D35C2BE2CA4A5E6004B371A /* Assets.xcassets */,
 				1D35C2C02CA4A5E6004B371A /* Preview Content */,
+				1D0FA9712CB5C9F6008A26F0 /* NetworkingManager.swift */,
 			);
 			path = ToDoApp;
 			sourceTree = "<group>";
@@ -90,6 +97,7 @@
 				1D5035F12CB3240400B8D70F /* LoginView.swift */,
 				1D5035F32CB324A100B8D70F /* TodoCreateView.swift */,
 				1D5035F52CB324B800B8D70F /* TodoEditView.swift */,
+				1D0FA9762CB5CE60008A26F0 /* SettingsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -125,6 +133,9 @@
 			dependencies = (
 			);
 			name = ToDoApp;
+			packageProductDependencies = (
+				1D0FA9742CB5CAC4008A26F0 /* KeychainAccess */,
+			);
 			productName = ToDoApp;
 			productReference = 1D35C2B72CA4A5E5004B371A /* ToDoApp.app */;
 			productType = "com.apple.product-type.application";
@@ -153,6 +164,9 @@
 				Base,
 			);
 			mainGroup = 1D35C2AE2CA4A5E5004B371A;
+			packageReferences = (
+				1D0FA9732CB5CAC4008A26F0 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+			);
 			productRefGroup = 1D35C2B82CA4A5E5004B371A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -184,7 +198,9 @@
 				1D35C2BD2CA4A5E5004B371A /* ContentView.swift in Sources */,
 				1D5035F02CB323B100B8D70F /* RegisterView.swift in Sources */,
 				1D5035F62CB324B800B8D70F /* TodoEditView.swift in Sources */,
+				1D0FA9772CB5CE60008A26F0 /* SettingsView.swift in Sources */,
 				1D35C2BB2CA4A5E5004B371A /* ToDoAppApp.swift in Sources */,
+				1D0FA9722CB5C9F6008A26F0 /* NetworkingManager.swift in Sources */,
 				1D5035EB2CB3228300B8D70F /* TodoListView.swift in Sources */,
 				1D5035EE2CB3229800B8D70F /* Todo.swift in Sources */,
 			);
@@ -390,6 +406,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1D0FA9732CB5CAC4008A26F0 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1D0FA9742CB5CAC4008A26F0 /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1D0FA9732CB5CAC4008A26F0 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1D35C2AF2CA4A5E5004B371A /* Project object */;
 }

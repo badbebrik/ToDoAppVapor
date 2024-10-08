@@ -9,7 +9,9 @@ import SwiftUI
 
 struct TodoEditView: View {
     @Binding var todo: Todo
-    
+    @State private var errorMessage: String?
+    @Environment(\.presentationMode) var presentationMode
+
     var body: some View {
         VStack {
             TextField("Task title", text: $todo.title)
@@ -17,14 +19,24 @@ struct TodoEditView: View {
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
                 .padding(.horizontal)
-            
+
             Toggle(isOn: $todo.isCompleted) {
                 Text("Completed")
             }
             .padding()
-            
+
             Button(action: {
-                
+                Task {
+                    do {
+                    
+                        try await NetworkingManager.shared.updateTodo(id: todo.id, title: todo.title, isCompleted: todo.isCompleted)
+                        
+                    
+                        presentationMode.wrappedValue.dismiss()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                }
             }) {
                 Text("Save Changes")
                     .font(.title2)
@@ -36,6 +48,12 @@ struct TodoEditView: View {
                     .cornerRadius(10)
             }
             .padding()
+
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .padding()
+            }
         }
         .navigationTitle("Edit Task")
     }

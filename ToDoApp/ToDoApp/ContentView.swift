@@ -9,15 +9,23 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isAuthenticated = false
-    
+
     var body: some View {
         if isAuthenticated {
             TodoListView()
         } else {
-            LoginView()
+            LoginView(isAuthenticated: $isAuthenticated)
+                .onAppear {
+                    if NetworkingManager.shared.getToken() != nil {
+                        isAuthenticated = true
+                    }
+                }
         }
+        
     }
 }
+
+
 
 #Preview {
     ContentView()

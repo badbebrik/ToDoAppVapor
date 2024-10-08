@@ -7,33 +7,40 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var showingRegisterScreen = false
-    
+    @Binding var isAuthenticated: Bool
+    @State private var errorMessage: String?
+
     var body: some View {
         VStack {
             Text("Login")
                 .font(.largeTitle)
                 .padding()
-            
+
             TextField("Email", text: $email)
                 .padding()
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
                 .padding(.horizontal)
-            
+
             SecureField("Password", text: $password)
                 .padding()
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
                 .padding(.horizontal)
-            
+
             Button(action: {
-            
+                Task {
+                    do {
+                        try await NetworkingManager.shared.login(email: email, password: password)
+                        isAuthenticated = true
+                    } catch {
+                        errorMessage = error.localizedDescription 
+                    }
+                }
             }) {
                 Text("Sign In")
                     .font(.title2)
@@ -45,28 +52,13 @@ struct LoginView: View {
                     .cornerRadius(10)
             }
             .padding()
-            
-            
 
-            Button(action: {
-            }) {
-                HStack {
-                    Image("google_icon")
-                        .resizable()
-                        .frame(width: 40, height: 30)
-                        .clipShape(Circle())
-                    Text("Sign in with Google")
-                        .font(.title2)
-                        .bold()
-                        .foregroundColor(.white)
-                        .padding()
-                }
-                .frame(maxWidth: .infinity)
-                .background(Color.red)
-                .cornerRadius(10)
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .padding()
             }
-            .padding(20)
-            
+
             Button(action: {
                 showingRegisterScreen = true
             }) {
@@ -75,7 +67,7 @@ struct LoginView: View {
                     .padding(.top, 10)
             }
             .sheet(isPresented: $showingRegisterScreen) {
-                RegisterView()
+                RegisterView(isAuthenticated: $isAuthenticated)
             }
         }
     }
@@ -83,6 +75,7 @@ struct LoginView: View {
 
 
 
+
 #Preview {
-    LoginView()
+    LoginView(isAuthenticated: .constant(false))
 }

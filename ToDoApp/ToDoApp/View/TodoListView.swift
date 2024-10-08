@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct TodoListView: View {
-    @State private var todos = [
-        Todo(id: UUID(), title: "Buy potato", isCompleted: false),
-        Todo(id: UUID(), title: "Do homework", isCompleted: true)
-    ]
-    
+    @State private var todos: [Todo] = []
+    @State private var isShowingCreateTaskView = false  
+    @State private var isShowingSettingsView = false
+
     var body: some View {
         NavigationView {
             List {
@@ -29,14 +28,38 @@ struct TodoListView: View {
                 }
             }
             .navigationTitle("Todo List")
-            .navigationBarItems(trailing: Button(action: {
-            
-            }) {
-                Image(systemName: "plus")
-            })
+            .navigationBarItems(
+                leading: Button(action: {
+                    isShowingSettingsView = true
+                }) {
+                    Image(systemName: "gearshape")
+                },
+                trailing: Button(action: {
+                    isShowingCreateTaskView = true
+                }) {
+                    Image(systemName: "plus")
+                }
+            )
+            .sheet(isPresented: $isShowingCreateTaskView) {
+                TodoCreateView(todos: $todos)
+            }
+            .sheet(isPresented: $isShowingSettingsView) {
+                SettingsView(isAuthenticated: .constant(false))
+            }
+            .onAppear {
+                Task {
+                    do {
+                        todos = try await NetworkingManager.shared.fetchTodos()
+                    } catch {
+                        print("Error fetching todos: \(error)")
+                    }
+                }
+            }
         }
     }
 }
+
+
 
 #Preview {
     TodoListView()
