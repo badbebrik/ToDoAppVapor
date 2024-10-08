@@ -2,9 +2,11 @@ import NIOSSL
 import Fluent
 import FluentPostgresDriver
 import Vapor
+import JWT
 
 public func configure(_ app: Application) async throws {
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+    app.jwt.signers.use(.hs256(key: "secret"))
 
     app.databases.use(DatabaseConfigurationFactory.postgres(configuration: .init(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
@@ -15,7 +17,9 @@ public func configure(_ app: Application) async throws {
         tls: .prefer(try .init(configuration: .clientDefault)))
     ), as: .psql)
 
+    app.migrations.add(CreateUser())
     app.migrations.add(CreateTodo())
+    app.migrations.add(AddUserToTasks())
     try await app.autoMigrate().get()
     try routes(app)
 }

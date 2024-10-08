@@ -13,11 +13,16 @@ final class Task: Model {
     @Field(key: "isCompleted")
     var isCompleted: Bool
     
+    @Parent(key: "user_id")
+    var user: User
+    
     init() { }
 
-    init(id: UUID? = nil, title: String, isCompleted: Bool = false) {
+    init(id: UUID? = nil, title: String, isCompleted: Bool = false, userID: UUID) {
         self.id = id
         self.title = title
         self.isCompleted = isCompleted
+        self.$user.id = userID
     }
 }
+
