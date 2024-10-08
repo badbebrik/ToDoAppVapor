@@ -11,7 +11,9 @@ struct TodoCreateView: View {
     @Binding var todos: [Todo]
     @State private var title = ""
     @State private var isCompleted = false
-    
+    @State private var errorMessage: String?
+    @Environment(\.presentationMode) var presentationMode
+
     var body: some View {
         VStack {
             TextField("Task title", text: $title)
@@ -19,15 +21,28 @@ struct TodoCreateView: View {
                 .background(Color.gray.opacity(0.2))
                 .cornerRadius(10)
                 .padding(.horizontal)
-            
+
             Toggle(isOn: $isCompleted) {
                 Text("Completed")
             }
             .padding()
-            
+
             Button(action: {
-                let newTodo = Todo(id: UUID(), title: title, isCompleted: isCompleted)
-                todos.append(newTodo)
+                Task {
+                    do {
+                       
+                        try await NetworkingManager.shared.createTodo(title: title, isCompleted: isCompleted)
+                        
+                
+                        let newTodo = Todo(id: UUID(), title: title, isCompleted: isCompleted)
+                        todos.append(newTodo)
+                        
+                
+                        presentationMode.wrappedValue.dismiss()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                }
             }) {
                 Text("Create Task")
                     .font(.title2)
@@ -39,10 +54,17 @@ struct TodoCreateView: View {
                     .cornerRadius(10)
             }
             .padding()
+
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .padding()
+            }
         }
         .navigationTitle("Create Task")
     }
 }
+
 
 
 #Preview {
