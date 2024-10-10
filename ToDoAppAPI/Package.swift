@@ -7,8 +7,10 @@ let package = Package(
        .macOS(.v13)
     ],
     dependencies: [
+        
         // 💧 A server-side Swift web framework.
         .package(url: "https://github.com/vapor/vapor.git", from: "4.99.3"),
+        .package(url: "https://github.com/dankinsoid/VaporToOpenAPI.git", from: "4.7.1"),
         // 🗄 An ORM for SQL and NoSQL databases.
         .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
         // 🐘 Fluent driver for Postgres.
@@ -24,6 +26,7 @@ let package = Package(
                 .product(name: "Fluent", package: "fluent"),
                 .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
                 .product(name: "Vapor", package: "vapor"),
+                .product(name: "VaporToOpenAPI", package: "VaporToOpenAPI"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
                 .product(name: "JWT", package: "JWT")
