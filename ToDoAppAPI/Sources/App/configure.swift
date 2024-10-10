@@ -3,10 +3,12 @@ import Fluent
 import FluentPostgresDriver
 import Vapor
 import JWT
+import Leaf
 
 public func configure(_ app: Application) async throws {
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
     app.jwt.signers.use(.hs256(key: "secret"))
+    app.views.use(.leaf)
 
 
     let corsConfiguration = CORSMiddleware.Configuration(

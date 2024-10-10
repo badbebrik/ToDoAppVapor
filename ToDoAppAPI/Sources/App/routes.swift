@@ -20,6 +20,10 @@ func routes(_ app: Application) throws {
         )
     }
     
+    app.get("cucumber") { req in
+        return req.view.render("cucumber")
+    }
+    
     let taskController = TodoController()
     try app.register(collection: taskController)
     let userController = UserController()
