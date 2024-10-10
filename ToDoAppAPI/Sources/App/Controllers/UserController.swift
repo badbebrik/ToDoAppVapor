@@ -8,12 +8,30 @@
 import Vapor
 import Fluent
 import JWT
+import VaporToOpenAPI
 
 struct UserController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let users = routes.grouped("users")
         users.post("register", use: register)
+            .openAPI(
+                summary: "Регистрация нового пользователя",
+                description: "Создает нового пользователя с предоставленными email и паролем. Возвращает информацию о созданном пользователе.",
+                body: .type(RegisterDTO.self),
+                response: .type(UserDTO.self),
+                responseDescription: "Успешная регистрация. Возвращается информация о пользователе.",
+                statusCode: .created
+            )
+
         users.post("login", use: login)
+            .openAPI(
+                summary: "Вход в систему",
+                description: "Позволяет пользователю войти в систему с использованием email и пароля. Возвращает JWT-токен при успешной авторизации.",
+                body: .type(LoginDTO.self),
+                response: .type(UserTokenDTO.self),
+                responseDescription: "Успешная авторизация. Возвращается JWT-токен.",
+                statusCode: .ok
+            )
     }
 
     func login(req: Request) async throws -> UserTokenDTO {
