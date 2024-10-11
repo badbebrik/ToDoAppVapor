@@ -67,12 +67,12 @@ struct TodoController: RouteCollection {
     func index(req: Request) async throws -> [TodoDTO] {
         let user = try req.auth.require(User.self)
         
-        let tasks = try await Task.query(on: req.db)
+        let todos = try await Todo.query(on: req.db)
             .filter(\.$user.$id == user.id!)
             .all()
         
-        return tasks.map { task in
-            TodoDTO(id: task.id, title: task.title, isCompleted: task.isCompleted)
+        return todos.map { todo in
+            TodoDTO(id: todo.id, title: todo.title, isCompleted: todo.isCompleted)
         }
     }
 
@@ -80,43 +80,43 @@ struct TodoController: RouteCollection {
         let user = try req.auth.require(User.self)
         let todoDTO = try req.content.decode(TodoDTO.self)
         
-        let task = Task(title: todoDTO.title, isCompleted: todoDTO.isCompleted, userID: try user.requireID())
-        try await task.save(on: req.db)
-        return TodoDTO(id: task.id, title: task.title, isCompleted: task.isCompleted)
+        let todo = Todo(title: todoDTO.title, isCompleted: todoDTO.isCompleted, userID: try user.requireID())
+        try await todo.save(on: req.db)
+        return TodoDTO(id: todo.id, title: todo.title, isCompleted: todo.isCompleted)
     }
     
     func getById(req: Request) async throws -> TodoDTO {
         let user = try req.auth.require(User.self)
-        guard let task = try await Task.find(req.parameters.get("todoID"), on: req.db),
-              task.$user.id == user.id else {
+        guard let todo = try await Todo.find(req.parameters.get("todoID"), on: req.db),
+              todo.$user.id == user.id else {
             throw Abort(.notFound)
         }
 
-        return TodoDTO(id: task.id, title: task.title, isCompleted: task.isCompleted)
+        return TodoDTO(id: todo.id, title: todo.title, isCompleted: todo.isCompleted)
     }
 
     func update(req: Request) async throws -> TodoDTO {
         let user = try req.auth.require(User.self)
         let updatedTodoDTO = try req.content.decode(TodoDTO.self)
         
-        guard let task = try await Task.find(req.parameters.get("todoID"), on: req.db),
-              task.$user.id == user.id else {
+        guard let todo = try await Todo.find(req.parameters.get("todoID"), on: req.db),
+              todo.$user.id == user.id else {
             throw Abort(.notFound)
         }
         
-        task.title = updatedTodoDTO.title
-        task.isCompleted = updatedTodoDTO.isCompleted
-        try await task.update(on: req.db)
-        return TodoDTO(id: task.id, title: task.title, isCompleted: task.isCompleted)
+        todo.title = updatedTodoDTO.title
+        todo.isCompleted = updatedTodoDTO.isCompleted
+        try await todo.update(on: req.db)
+        return TodoDTO(id: todo.id, title: todo.title, isCompleted: todo.isCompleted)
     }
 
     func delete(req: Request) async throws -> HTTPStatus {
         let user = try req.auth.require(User.self)
-        guard let task = try await Task.find(req.parameters.get("todoID"), on: req.db),
-              task.$user.id == user.id else {
+        guard let todo = try await Todo.find(req.parameters.get("todoID"), on: req.db),
+              todo.$user.id == user.id else {
             throw Abort(.notFound)
         }
-        try await task.delete(on: req.db)
+        try await todo.delete(on: req.db)
         return .noContent
     }
 }

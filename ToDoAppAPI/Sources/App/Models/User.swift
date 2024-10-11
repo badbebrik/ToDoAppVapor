@@ -21,7 +21,7 @@ final class User: Model, Authenticatable {
     var passwordHash: String
 
     @Children(for: \.$user)
-    var tasks: [Task]
+    var todos: [Todo]
     
     init() { }
 

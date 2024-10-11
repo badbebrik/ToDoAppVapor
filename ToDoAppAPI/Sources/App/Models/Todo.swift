@@ -1,7 +1,7 @@
 import Vapor
 import Fluent
 
-final class Task: Model {
+final class Todo: Model {
     static let schema = "tasks"
     
     @ID(key: .id)
