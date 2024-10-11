@@ -3,20 +3,12 @@ import Fluent
 import FluentPostgresDriver
 import Vapor
 import JWT
+import Leaf
 
 public func configure(_ app: Application) async throws {
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
     app.jwt.signers.use(.hs256(key: "secret"))
-
-
-    let corsConfiguration = CORSMiddleware.Configuration(
-        allowedOrigin: .all,
-        allowedMethods: [.GET, .POST, .PUT, .OPTIONS, .DELETE],
-        allowedHeaders: [.accept, .authorization, .contentType, .origin, .xRequestedWith]
-    )
-    let corsMiddleware = CORSMiddleware(configuration: corsConfiguration)
-    app.middleware.use(corsMiddleware)
-
+    app.views.use(.leaf)
 
     app.databases.use(DatabaseConfigurationFactory.postgres(configuration: .init(
         hostname: Environment.get("DATABASE_HOST") ?? "localhost",
