@@ -24,8 +24,8 @@ func routes(_ app: Application) throws {
         return req.view.render("cucumber")
     }
     
-    let taskController = TodoController()
-    try app.register(collection: taskController)
+    let todoController = TodoController()
+    try app.register(collection: todoController)
     let userController = UserController()
     try app.register(collection: userController)
 

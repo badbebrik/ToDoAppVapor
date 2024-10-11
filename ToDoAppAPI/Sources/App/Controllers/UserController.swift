@@ -91,6 +91,17 @@ struct UserTokenPayload: JWTPayload {
     }
 }
 
+struct AuthenticatedUserMiddleware: AsyncMiddleware {
+    func respond(to req: Request, chainingTo next: AsyncResponder) async throws -> Response {
+        let payload = try req.jwt.verify(as: UserTokenPayload.self)
+        guard let user = try await User.find(payload.userID, on: req.db) else {
+            throw Abort(.unauthorized)
+        }
+        req.auth.login(user)
+        return try await next.respond(to: req)
+    }
+}
+
 
 struct RegisterDTO: Content {
     let email: String
